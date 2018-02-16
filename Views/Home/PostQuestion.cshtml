@@ -1,0 +1,43 @@
+﻿@model ForumProject1.Models.MultiModel
+
+@{
+    ViewBag.Title = "PostQuestion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron text-center text-primary">
+    <h1>Post Your Question</h1>
+    <br>
+    <p class="text-left">You can Post your questions here.Keep in mind you include :<br>
+        1. Appropriate Question Title.<br>
+        2. Simple description of problem so other users can help you better.<br>
+        3. And finally the langugae to which the question is associated with.
+    </p> 
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-10">
+            <h2>Question Details</h2>
+            @using (Html.BeginForm("PostQuestion", "Home", FormMethod.Post))
+            {
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.QuestionModel.LangId, ViewBag.langList as SelectList, "--Select Language--", new {@class = "form-control", style="max-width:unset;"})
+                </div>
+
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.QuestionModel.QuestionTitle, new {@class = "form-control", @placeholder = "Question Title", style = "max-width:unset;"})
+                </div>
+
+                <div class="form-group">
+                    @Html.EditorFor(model => model.QuestionModel.QuestionDesc, new { @class = "form-control", @placeholder = "Question Description", style = "max-width:unset; height:300px;" })
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Post" class="btn btn-block btn-primary" id="btnPost"/>
+                </div>
+            }
+        </div>    
+    </div>
+</div>

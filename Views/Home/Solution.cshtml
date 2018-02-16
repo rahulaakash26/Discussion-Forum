@@ -1,0 +1,82 @@
+﻿@using ForumProject1.Controllers
+@using ForumProject1.Models
+@model ForumProject1.Models.MultiModel
+@{
+    ViewBag.Title = "Solution";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Question</h2>
+<div class="container">
+    <div class="panel panel-danger">
+        <div class="panel-heading">
+            <strong>@Model.QuestionModel.QuestionTitle</strong>
+        </div>
+        <div class="panel-body">
+            <div class="text-uppercase">
+                <strong>Desciption :</strong>
+            </div>
+            <p>@Model.QuestionModel.QuestionDesc</p><br>
+            <div class="pull-right">
+                <strong>Posted By : </strong>@Model.QuestionModel.name <strong>Date Posted : </strong>@Model.QuestionModel.DatePosted</div>
+        </div>
+    </div>
+</div>
+
+<h2>Answers</h2>
+<div class="container">
+    @if (Model.AnswerModelList != null)
+    {
+        foreach (var item in Model.AnswerModelList)
+        {
+            <div class="panel panel-success">
+                <div class="panel-body" style="background: #c8e6c9;">
+                    <p>@Html.Raw(item.AnswerDesc)</p><br>
+                    <div class="pull-right">
+                        <strong>Answer by : </strong>@item.name
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="panel panel-success">
+            <div class="panel-body" style="background: #ffcc80;">
+                <strong>
+                    No more answers to this question yet.
+                    Be the one to answer the question.
+                </strong>
+            </div>
+        </div>
+    }
+</div>
+
+<section>
+    <div class="container">
+        @using (Html.BeginForm("Solution", "Home", FormMethod.Post))
+        {
+            @Html.HiddenFor(model=>model.QuestionModel.QuestionId)
+            @Html.HiddenFor(model=>model.LangModel.LangId)
+            <hr/>
+            <div class="form-group">
+                @Html.EditorFor(model=>model.AnswerModel.AnswerDesc, new {@class="form-control", @placeholder = "Question Description" })
+                @Html.ValidationMessageFor(model=>model.AnswerModel.AnswerDesc)
+            </div>
+
+            <script>
+                $(function() {
+                    $('#Message').ckeditor();
+                })
+            </script>
+
+            if (Session["name"] != null)
+            {
+                <input type="submit" value="Post Answer" class="btn btn-block btn-primary" id="btnPostAnswer"/>
+            }
+            else
+            {
+                @Html.ActionLink("Login to answer this question", "Popop", "Home", new{@class="btn btn-block btn-warning", @id="#btnLogin", href="#login", data_toggle="modal", @style="width:200px"})
+            }
+        }
+    </div>
+</section>
+

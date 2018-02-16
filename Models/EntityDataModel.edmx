@@ -1,0 +1,504 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ForumProjectModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AnswerTable">
+          <Key>
+            <PropertyRef Name="AnswerId" />
+          </Key>
+          <Property Name="AnswerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AnswerDesc" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="LangId" Type="int" />
+        </EntityType>
+        <EntityType Name="LangTable">
+          <Key>
+            <PropertyRef Name="LangId" />
+          </Key>
+          <Property Name="LangId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LangName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ForumProject.dbo.ProfileTable' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ProfileTable">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Gender" Type="nvarchar" MaxLength="50" />
+          <Property Name="DOB" Type="date" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" />
+          <Property Name="About" Type="nvarchar(max)" />
+          <Property Name="Qualification" Type="nvarchar" MaxLength="50" />
+          <Property Name="Designation" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="QuestionTable">
+          <Key>
+            <PropertyRef Name="QuestionId" />
+          </Key>
+          <Property Name="QuestionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="QuestionTitle" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="QuestionDesc" Type="nvarchar(max)" />
+          <Property Name="LangId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="UserRegisteration">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RegisterDate" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <Association Name="FK_AnswerTable_LangTable">
+          <End Role="LangTable" Type="Self.LangTable" Multiplicity="0..1" />
+          <End Role="AnswerTable" Type="Self.AnswerTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LangTable">
+              <PropertyRef Name="LangId" />
+            </Principal>
+            <Dependent Role="AnswerTable">
+              <PropertyRef Name="LangId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AnswerTable_QuestionTable">
+          <End Role="QuestionTable" Type="Self.QuestionTable" Multiplicity="1" />
+          <End Role="AnswerTable" Type="Self.AnswerTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionTable">
+              <PropertyRef Name="QuestionId" />
+            </Principal>
+            <Dependent Role="AnswerTable">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AnswerTable_UserRegisteration">
+          <End Role="UserRegisteration" Type="Self.UserRegisteration" Multiplicity="1" />
+          <End Role="AnswerTable" Type="Self.AnswerTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRegisteration">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AnswerTable">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProfileTable_UserRegisteration">
+          <End Role="UserRegisteration" Type="Self.UserRegisteration" Multiplicity="1" />
+          <End Role="ProfileTable" Type="Self.ProfileTable" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="UserRegisteration">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="ProfileTable">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionTable_LangTable">
+          <End Role="LangTable" Type="Self.LangTable" Multiplicity="1" />
+          <End Role="QuestionTable" Type="Self.QuestionTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LangTable">
+              <PropertyRef Name="LangId" />
+            </Principal>
+            <Dependent Role="QuestionTable">
+              <PropertyRef Name="LangId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionTable_LangTable1">
+          <End Role="LangTable" Type="Self.LangTable" Multiplicity="1" />
+          <End Role="QuestionTable" Type="Self.QuestionTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LangTable">
+              <PropertyRef Name="LangId" />
+            </Principal>
+            <Dependent Role="QuestionTable">
+              <PropertyRef Name="LangId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionTable_UserRegisteration">
+          <End Role="UserRegisteration" Type="Self.UserRegisteration" Multiplicity="1" />
+          <End Role="QuestionTable" Type="Self.QuestionTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRegisteration">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="QuestionTable">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="procRegister" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="date" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="ForumProjectModelStoreContainer">
+          <EntitySet Name="AnswerTable" EntityType="Self.AnswerTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LangTable" EntityType="Self.LangTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QuestionTable" EntityType="Self.QuestionTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRegisteration" EntityType="Self.UserRegisteration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProfileTable" EntityType="Self.ProfileTable" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ProfileTable].[UserId] AS [UserId], 
+    [ProfileTable].[Gender] AS [Gender], 
+    [ProfileTable].[DOB] AS [DOB], 
+    [ProfileTable].[City] AS [City], 
+    [ProfileTable].[About] AS [About], 
+    [ProfileTable].[Qualification] AS [Qualification], 
+    [ProfileTable].[Designation] AS [Designation]
+    FROM [dbo].[ProfileTable] AS [ProfileTable]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_AnswerTable_LangTable" Association="Self.FK_AnswerTable_LangTable">
+            <End Role="LangTable" EntitySet="LangTable" />
+            <End Role="AnswerTable" EntitySet="AnswerTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AnswerTable_QuestionTable" Association="Self.FK_AnswerTable_QuestionTable">
+            <End Role="QuestionTable" EntitySet="QuestionTable" />
+            <End Role="AnswerTable" EntitySet="AnswerTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AnswerTable_UserRegisteration" Association="Self.FK_AnswerTable_UserRegisteration">
+            <End Role="UserRegisteration" EntitySet="UserRegisteration" />
+            <End Role="AnswerTable" EntitySet="AnswerTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProfileTable_UserRegisteration" Association="Self.FK_ProfileTable_UserRegisteration">
+            <End Role="UserRegisteration" EntitySet="UserRegisteration" />
+            <End Role="ProfileTable" EntitySet="ProfileTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionTable_LangTable" Association="Self.FK_QuestionTable_LangTable">
+            <End Role="LangTable" EntitySet="LangTable" />
+            <End Role="QuestionTable" EntitySet="QuestionTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionTable_LangTable1" Association="Self.FK_QuestionTable_LangTable1">
+            <End Role="LangTable" EntitySet="LangTable" />
+            <End Role="QuestionTable" EntitySet="QuestionTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionTable_UserRegisteration" Association="Self.FK_QuestionTable_UserRegisteration">
+            <End Role="UserRegisteration" EntitySet="UserRegisteration" />
+            <End Role="QuestionTable" EntitySet="QuestionTable" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ForumProjectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AnswerTable">
+          <Key>
+            <PropertyRef Name="AnswerId" />
+          </Key>
+          <Property Name="AnswerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AnswerDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="LangId" Type="Int32" />
+          <NavigationProperty Name="LangTable" Relationship="Self.FK_AnswerTable_LangTable" FromRole="AnswerTable" ToRole="LangTable" />
+          <NavigationProperty Name="QuestionTable" Relationship="Self.FK_AnswerTable_QuestionTable" FromRole="AnswerTable" ToRole="QuestionTable" />
+          <NavigationProperty Name="UserRegisteration" Relationship="Self.FK_AnswerTable_UserRegisteration" FromRole="AnswerTable" ToRole="UserRegisteration" />
+        </EntityType>
+        <EntityType Name="LangTable">
+          <Key>
+            <PropertyRef Name="LangId" />
+          </Key>
+          <Property Name="LangId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LangName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AnswerTables" Relationship="Self.FK_AnswerTable_LangTable" FromRole="LangTable" ToRole="AnswerTable" />
+          <NavigationProperty Name="QuestionTables" Relationship="Self.FK_QuestionTable_LangTable" FromRole="LangTable" ToRole="QuestionTable" />
+          <NavigationProperty Name="QuestionTables1" Relationship="Self.FK_QuestionTable_LangTable1" FromRole="LangTable" ToRole="QuestionTable" />
+        </EntityType>
+        <EntityType Name="QuestionTable">
+          <Key>
+            <PropertyRef Name="QuestionId" />
+          </Key>
+          <Property Name="QuestionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="QuestionTitle" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="QuestionDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LangId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AnswerTables" Relationship="Self.FK_AnswerTable_QuestionTable" FromRole="QuestionTable" ToRole="AnswerTable" />
+          <NavigationProperty Name="LangTable" Relationship="Self.FK_QuestionTable_LangTable" FromRole="QuestionTable" ToRole="LangTable" />
+          <NavigationProperty Name="LangTable1" Relationship="Self.FK_QuestionTable_LangTable1" FromRole="QuestionTable" ToRole="LangTable" />
+          <NavigationProperty Name="UserRegisteration" Relationship="Self.FK_QuestionTable_UserRegisteration" FromRole="QuestionTable" ToRole="UserRegisteration" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="UserRegisteration">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RegisterDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AnswerTables" Relationship="Self.FK_AnswerTable_UserRegisteration" FromRole="UserRegisteration" ToRole="AnswerTable" />
+          <NavigationProperty Name="QuestionTables" Relationship="Self.FK_QuestionTable_UserRegisteration" FromRole="UserRegisteration" ToRole="QuestionTable" />
+          <NavigationProperty Name="ProfileTable" Relationship="Self.FK_ProfileTable_UserRegisteration" FromRole="UserRegisteration" ToRole="ProfileTable" />
+        </EntityType>
+        <EntityType Name="ProfileTable">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DOB" Type="DateTime" Precision="0" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="About" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Qualification" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Designation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserRegisteration" Relationship="Self.FK_ProfileTable_UserRegisteration" FromRole="ProfileTable" ToRole="UserRegisteration" />
+        </EntityType>
+        <Association Name="FK_AnswerTable_LangTable">
+          <End Role="LangTable" Type="Self.LangTable" Multiplicity="0..1" />
+          <End Role="AnswerTable" Type="Self.AnswerTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LangTable">
+              <PropertyRef Name="LangId" />
+            </Principal>
+            <Dependent Role="AnswerTable">
+              <PropertyRef Name="LangId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AnswerTable_QuestionTable">
+          <End Role="QuestionTable" Type="Self.QuestionTable" Multiplicity="1" />
+          <End Role="AnswerTable" Type="Self.AnswerTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionTable">
+              <PropertyRef Name="QuestionId" />
+            </Principal>
+            <Dependent Role="AnswerTable">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AnswerTable_UserRegisteration">
+          <End Role="UserRegisteration" Type="Self.UserRegisteration" Multiplicity="1" />
+          <End Role="AnswerTable" Type="Self.AnswerTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRegisteration">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="AnswerTable">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionTable_LangTable">
+          <End Role="LangTable" Type="Self.LangTable" Multiplicity="1" />
+          <End Role="QuestionTable" Type="Self.QuestionTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LangTable">
+              <PropertyRef Name="LangId" />
+            </Principal>
+            <Dependent Role="QuestionTable">
+              <PropertyRef Name="LangId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionTable_LangTable1">
+          <End Role="LangTable" Type="Self.LangTable" Multiplicity="1" />
+          <End Role="QuestionTable" Type="Self.QuestionTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LangTable">
+              <PropertyRef Name="LangId" />
+            </Principal>
+            <Dependent Role="QuestionTable">
+              <PropertyRef Name="LangId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionTable_UserRegisteration">
+          <End Role="UserRegisteration" Type="Self.UserRegisteration" Multiplicity="1" />
+          <End Role="QuestionTable" Type="Self.QuestionTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRegisteration">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="QuestionTable">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProfileTable_UserRegisteration">
+          <End Role="UserRegisteration" Type="Self.UserRegisteration" Multiplicity="1" />
+          <End Role="ProfileTable" Type="Self.ProfileTable" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="UserRegisteration">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="ProfileTable">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ForumProjectEntities2" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AnswerTables" EntityType="Self.AnswerTable" />
+          <EntitySet Name="LangTables" EntityType="Self.LangTable" />
+          <EntitySet Name="QuestionTables" EntityType="Self.QuestionTable" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="UserRegisterations" EntityType="Self.UserRegisteration" />
+          <EntitySet Name="ProfileTables" EntityType="Self.ProfileTable" />
+          <AssociationSet Name="FK_AnswerTable_LangTable" Association="Self.FK_AnswerTable_LangTable">
+            <End Role="LangTable" EntitySet="LangTables" />
+            <End Role="AnswerTable" EntitySet="AnswerTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AnswerTable_QuestionTable" Association="Self.FK_AnswerTable_QuestionTable">
+            <End Role="QuestionTable" EntitySet="QuestionTables" />
+            <End Role="AnswerTable" EntitySet="AnswerTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AnswerTable_UserRegisteration" Association="Self.FK_AnswerTable_UserRegisteration">
+            <End Role="UserRegisteration" EntitySet="UserRegisterations" />
+            <End Role="AnswerTable" EntitySet="AnswerTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionTable_LangTable" Association="Self.FK_QuestionTable_LangTable">
+            <End Role="LangTable" EntitySet="LangTables" />
+            <End Role="QuestionTable" EntitySet="QuestionTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionTable_LangTable1" Association="Self.FK_QuestionTable_LangTable1">
+            <End Role="LangTable" EntitySet="LangTables" />
+            <End Role="QuestionTable" EntitySet="QuestionTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionTable_UserRegisteration" Association="Self.FK_QuestionTable_UserRegisteration">
+            <End Role="UserRegisteration" EntitySet="UserRegisterations" />
+            <End Role="QuestionTable" EntitySet="QuestionTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProfileTable_UserRegisteration" Association="Self.FK_ProfileTable_UserRegisteration">
+            <End Role="UserRegisteration" EntitySet="UserRegisterations" />
+            <End Role="ProfileTable" EntitySet="ProfileTables" />
+          </AssociationSet>
+          <FunctionImport Name="procRegister">
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="date" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ForumProjectModelStoreContainer" CdmEntityContainer="ForumProjectEntities2">
+          <EntitySetMapping Name="AnswerTables">
+            <EntityTypeMapping TypeName="ForumProjectModel.AnswerTable">
+              <MappingFragment StoreEntitySet="AnswerTable">
+                <ScalarProperty Name="AnswerId" ColumnName="AnswerId" />
+                <ScalarProperty Name="AnswerDesc" ColumnName="AnswerDesc" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="LangId" ColumnName="LangId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LangTables">
+            <EntityTypeMapping TypeName="ForumProjectModel.LangTable">
+              <MappingFragment StoreEntitySet="LangTable">
+                <ScalarProperty Name="LangId" ColumnName="LangId" />
+                <ScalarProperty Name="LangName" ColumnName="LangName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuestionTables">
+            <EntityTypeMapping TypeName="ForumProjectModel.QuestionTable">
+              <MappingFragment StoreEntitySet="QuestionTable">
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="QuestionTitle" ColumnName="QuestionTitle" />
+                <ScalarProperty Name="QuestionDesc" ColumnName="QuestionDesc" />
+                <ScalarProperty Name="LangId" ColumnName="LangId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ForumProjectModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRegisterations">
+            <EntityTypeMapping TypeName="ForumProjectModel.UserRegisteration">
+              <MappingFragment StoreEntitySet="UserRegisteration">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="RegisterDate" ColumnName="RegisterDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProfileTables">
+            <EntityTypeMapping TypeName="ForumProjectModel.ProfileTable">
+              <MappingFragment StoreEntitySet="ProfileTable">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="About" ColumnName="About" />
+                <ScalarProperty Name="Qualification" ColumnName="Qualification" />
+                <ScalarProperty Name="Designation" ColumnName="Designation" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="procRegister" FunctionName="ForumProjectModel.Store.procRegister" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,185 @@
+﻿@using PagedList.Mvc
+@using ForumProject1.Models
+@model ForumProject1.Models.MultiModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*include script file for using script tag*@
+<script src="~/Scripts/jquery-3.2.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script src='@Url.Content("~/Scripts/jquery.validate.js")' type='text/javascript'></script>
+<script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")' type='text/javascript'></script>
+
+<div class="jumbotron text-center">
+    <div class="lead"><h1>Welcome to PU-TECH Hub</h1></div>
+    
+        <p class="text-left">
+            One stop solution to your programming related queries.<br>
+            Post questions after logging into your account and get your questions answered.
+        </p>
+    
+</div>
+
+<h3>Questions</h3>
+
+@*To show the questions*@
+@if (Model.QuestionPagedList != null)
+{
+    var i = 1;
+    foreach (var t in Model.QuestionPagedList)
+    {
+        if (t.QuestionTitle != null)
+        {
+            <div class="panel-group" id="accordion_@i">
+                <div class="panel panel-success" id="panel_@i">
+
+                    @*panel header*@
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            @i<span>.</span>
+                            <a data-toggle="collapse" href="#collapseOne_@i" style="text-decoration: none;">
+                                <strong>@t.QuestionTitle</strong>
+                                <span class="pull-right badge">@t.LangName</span>
+                            </a>
+                        </h4>
+                    </div>
+
+                    @*Collapsable panel Body*@
+                    <div class="panel-collapse collapse" id="collapseOne_@i">
+                        <div class="panel-body">
+                            @t.QuestionDesc
+                            <br>
+                            <strong>Posted by</strong> : @t.name
+                            <br><br>
+                            @Html.ActionLink("View or Answer the question", "Solution", new {qID = t.QuestionId})
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        i++;
+    }
+}
+
+@*for page numbers*@<div>
+    @Html.PagedListPager(Model.QuestionPagedList, page => Url.Action("Index", new {page}))
+</div>
+
+
+@*Sign Up Bootstrap Model*@
+<div class="modal fade" id="signUpModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            @*modal header*@
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="text-center text-info">Register Here</h4>
+            </div>
+
+            @*modal body*@
+            <div class="modal-body">
+                <form id="signUpForm">
+                    @Html.AntiForgeryToken()
+
+
+                    @Html.TextBoxFor(model => model.UserModel.Name, new {@class = "form-control", @placeholder = "Your Name", @Value = ""})
+                    @Html.ValidationMessageFor(model => model.UserModel.Name, "", new {@class = "text-danger"})
+                    <br>
+                    @Html.TextBoxFor(model => model.UserModel.Email, new {@class = "form-control", @placeholder = "Your Email", @Value = ""})
+                    @Html.ValidationMessageFor(model => model.UserModel.Email, "", new {@class = "text-danger"})
+                    <br>
+                    @Html.PasswordFor(model => model.UserModel.Password, new {@class = "form-control", @placeholder = "Your Password", @Value = ""})
+                    @Html.ValidationMessageFor(model => model.UserModel.Password, "", new {@class = "text-danger"})
+
+                </form>
+            </div>
+
+            @*modal footer*@
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                <input type="reset" class="btn btn-success" value="Register" id="btnRegister"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*Login Bootstrap Modal*@
+<div class="modal fade" id="loginModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            @*modal header*@
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="text-center text-info">Login Here</h4>
+            </div>
+
+            @*modal body*@
+            <div class="modal-body">
+                <form id="loginForm">
+                    @Html.TextBoxFor(model => model.Login.Username, new {@class = "form-control", @placeholder = "Enter Your Email", id = "loginEmail", @Value = ""})
+                    @Html.ValidationMessageFor(model => model.Login.Username, "", new {@class = "text-danger"})
+                    <br>
+                    @Html.PasswordFor(model => model.Login.Password, new {@class = "form-control", @placeholder = "Enter Your Password", id = "loginPass", @Value = ""})
+                    @Html.ValidationMessageFor(model => model.Login.Password, "", new {@class = "text-danger"})
+                </form>
+            </div>
+
+            @*modal footer*@
+            <div class="modal-footer">
+                <a href="#" class="btn btn-danger" data-dismiss="modal">Cancel</a>
+                <input type="reset" class="btn btn-success" value="Login" id="btnLogin"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Script for click of register button and login button inside the bootstrap modals*@
+<script>
+    $(document).ready(function() {
+        $("#btnRegister").click(function() {
+            var data = $("#signUpForm").serialize();
+            $.ajax({
+                type: "post",
+                url: "/Home/Index",
+                data: data,
+                success: function() {
+                    $("#signUpModal").modal("hide");
+                    location.reload();
+                    alert('Successfully Registered, you can login now.');
+                },
+                error: function() {
+                    alert('Error in Registering');
+                }
+            });
+        });
+    });
+
+    /*function for login button click*/
+    $("#btnLogin").click(function() {
+        var data = $("#loginForm").serialize();
+        $.ajax({
+            type: "post",
+            url: "/Home/Login",
+            data: data,
+            success: function() {
+                $("#loginModal").modal("hide");
+                location.reload();
+            },
+            error: function() {
+                alert('Error in Login');
+            }
+        });
+    });
+
+    /*function for logout button click*/
+
+</script>
